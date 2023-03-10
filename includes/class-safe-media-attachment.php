@@ -39,40 +39,38 @@ class Safe_Media_Attachment {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct(  ) {
+	public function __construct() {
 
 	}
 
 	/**
 	 * This function will return all post ids where the image is attached
+	 *
 	 * @param      $attachment_id
 	 * @param bool $string
 	 *
 	 * @return int[]|string
 	 */
 	function get_linked_posts( $attachment_id, $string = true ) {
-
+		// Get posts where attachment is set as featured image
 		$posts = get_posts( array(
-			'meta_key'   => '_thumbnail_id',
-			'meta_value' => $attachment_id,
-			'meta_query' => array(
-				'relation' => 'OR',
-				array(
-				'key' => '_thumbnail_id',
-				'value' => $attachment_id,
-				'compare' => ''
-			)),
-			'fields'     => 'ids'
-		) );
+            'post_type'   => 'post',
+            'post_status' => 'publish',
+            'numberposts' => -1,
+            'meta_key'    => '_thumbnail_id',
+            'meta_value'  => $attachment_id,
+            'fields'      => 'ids',
+        ) );
 
-		if ( ! $string ) {
+
+		if( !$string ) {
 			return $posts;
 		}
 
 		$post_string = '';
-		foreach ( $posts as $post_id ) {
-			$post_string .= '<a href="' . get_edit_post_link( $post_id ) . '">' . $post_id . '</a>';
-			if ( next( $posts ) == true ) {
+		foreach( $posts as $post_id ) {
+			$post_string .= '<a href="'.get_edit_post_link( $post_id ).'">'.$post_id.'</a>';
+			if( next( $posts ) == true ) {
 				$post_string .= ', ';
 			}
 		}
@@ -83,13 +81,14 @@ class Safe_Media_Attachment {
 
 	/**
 	 * This function will return all term ids where the image is attached
+	 *
 	 * @param      $attachment_id
 	 * @param bool $string
 	 *
 	 * @return int[]|string
 	 */
 	function get_linked_terms( $attachment_id, $string = true ) {
-		$args  = array(
+		$args = array(
 			'hide_empty' => false,
 			'taxonomy'   => $this->_taxonomy,
 			'meta_query' => array(
@@ -104,14 +103,14 @@ class Safe_Media_Attachment {
 
 		$terms = get_terms( $args );
 
-		if ( !$string ) {
+		if( !$string ) {
 			return $terms;
 		}
 
 		$term_string = '';
-		foreach ( $terms as $term_id ) {
-			$term_string .= '<a href="' . get_edit_term_link( $term_id ) . '">' . $term_id . '</a>';
-			if ( next( $terms ) == true ) {
+		foreach( $terms as $term_id ) {
+			$term_string .= '<a href="'.get_edit_term_link( $term_id ).'">'.$term_id.'</a>';
+			if( next( $terms ) == true ) {
 				$term_string .= ', ';
 			}
 		}

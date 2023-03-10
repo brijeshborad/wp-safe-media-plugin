@@ -107,9 +107,6 @@ class Safe_Media_Admin {
 
 	public function admin_init() {
 
-		// Register meta fields for image selection for tersm using CMB2 hook
-		//add_action( 'cmb2_admin_init', [ $this, 'register_image_box_for_term' ] );
-
 		// Register hooks to show attached objects for media library list
 		add_filter( 'manage_media_columns', [ $this, 'media_columns_filter' ] );
 		add_action( 'manage_media_custom_column', [ $this, 'media_custom_column_action' ], 10, 2 );
@@ -202,6 +199,7 @@ class Safe_Media_Admin {
 	 * @return mixed
 	 */
 	function pre_delete_attachment_filter( $delete, $post, $force_delete ) {
+
 		$posts = $this->safe_media_attachment->get_linked_posts( $post->ID );
 		$terms = $this->safe_media_attachment->get_linked_terms( $post->ID );
 		if( $posts || $terms ) {
