@@ -52,21 +52,34 @@ class Safe_Media_Attachment {
 	 * @return int[]|string
 	 */
 	function get_linked_posts( $attachment_id, $string = true ) {
-		// Get posts where attachment is set as featured image
-		$posts = get_posts( array(
-            'post_type'   => 'post',
-            'post_status' => 'publish',
-            'numberposts' => -1,
-            'meta_key'    => '_thumbnail_id',
-            'meta_value'  => $attachment_id,
-            'fields'      => 'ids',
-        ) );
 
+		// Get posts where attachment is set as featured image
+		$featured_img_posts = get_posts(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+				'numberposts' => - 1,
+				'meta_key'    => '_thumbnail_id',
+				'meta_value'  => $attachment_id,
+				'fields'      => 'ids',
+			) );
+
+		// Get posts where image is attached or its parent
+		$parent_posts = get_posts(
+			array(
+				'post_type'     => 'attachment',
+				'attachment_id' => $attachment_id,
+				'hide_empty'    => true,
+				'fields'        => 'id=>parent',
+			) );
+
+		$posts = array_unique( array_filter( array_merge( $featured_img_posts, $parent_posts ) ) );
 
 		if( !$string ) {
 			return $posts;
 		}
 
+		// Convert array to clickable comma separated string
 		$post_string = '';
 		foreach( $posts as $post_id ) {
 			$post_string .= '<a href="'.get_edit_post_link( $post_id ).'">'.$post_id.'</a>';
@@ -107,6 +120,7 @@ class Safe_Media_Attachment {
 			return $terms;
 		}
 
+		// Convert array to clickable comma separated string
 		$term_string = '';
 		foreach( $terms as $term_id ) {
 			$term_string .= '<a href="'.get_edit_term_link( $term_id ).'">'.$term_id.'</a>';
