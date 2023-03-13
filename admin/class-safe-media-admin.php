@@ -41,6 +41,9 @@ class Safe_Media_Admin {
 	private $version;
 
 
+	/**
+	 * @var string
+	 */
 	private $_taxonomy = 'category';
 
 	/**
@@ -118,6 +121,10 @@ class Safe_Media_Admin {
 		add_filter( 'pre_delete_attachment', [ $this, 'pre_delete_attachment_filter' ], 10, 3 );
 	}
 
+
+	/**
+	 *
+	 */
 	public function register_image_box_for_term() {
 		/**
 		 * Register CMB2 box for category taxonomy
@@ -155,6 +162,11 @@ class Safe_Media_Admin {
 	}
 
 
+	/**
+	 * @param $columns
+	 *
+	 * @return mixed
+	 */
 	function media_columns_filter( $columns ) {
 		$columns['colAttachedObjects'] = __( 'Attached Objects' );
 
@@ -162,6 +174,10 @@ class Safe_Media_Admin {
 	}
 
 
+	/**
+	 * @param $column_name
+	 * @param $attachment_id
+	 */
 	function media_custom_column_action( $column_name, $attachment_id ) {
 		if( $column_name !== 'colAttachedObjects' ) {
 			return;
@@ -173,6 +189,12 @@ class Safe_Media_Admin {
 	}
 
 
+	/**
+	 * @param $form_fields
+	 * @param $attachment
+	 *
+	 * @return mixed
+	 */
 	function media_attachment_fields_filter( $form_fields, $attachment ) {
 		$objects = $this->safe_media_attachment->get_attached_objects( $attachment->ID, true );
 
@@ -196,6 +218,8 @@ class Safe_Media_Admin {
 	}
 
 	/**
+	 * This function will be used to prevent deletion of image attached with objects
+	 *
 	 * @param $delete
 	 * @param $post
 	 * @param $force_delete
@@ -211,9 +235,10 @@ class Safe_Media_Admin {
 				// In ajax call, unable to send custom message right now.
 				wp_die( 0 );
 			}
+
 			$message = __( 'Please remove the image from below objects before deleting it.', SAFE_MEDIA_TEXT_DOMAIN );
-			$message .= $objects['posts'] ? '<br/>'.__( 'Articles: ', SAFE_MEDIA_TEXT_DOMAIN ).$objects['posts'].'<br/>' : '';
-			$message .= $objects['terms'] ? __( 'Terms: ', SAFE_MEDIA_TEXT_DOMAIN ).$objects['terms'] : '';
+			$message .= $objects['posts'] ? '<br/>'.__( 'Articles: ', SAFE_MEDIA_TEXT_DOMAIN ).$objects['posts'] : '';
+			$message .= $objects['terms'] ? '<br/>'.__( 'Terms: ', SAFE_MEDIA_TEXT_DOMAIN ).$objects['terms'] : '';
 			wp_die( $message, 'Action Needed', array( 'response' => 400, 'back_link' => true ) );
 		}
 

@@ -1,16 +1,6 @@
 <?php
 
 /**
- * Register all actions and filters for the plugin
- *
- * @link       https://profiles.wordpress.org/brijesh2911/
- * @since      1.0.0
- *
- * @package    Safe_Media
- * @subpackage Safe_Media/includes
- */
-
-/**
  * Register all actions and filters for the plugin.
  *
  * Maintain a list of all hooks that are registered throughout

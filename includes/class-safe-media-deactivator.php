@@ -1,16 +1,6 @@
 <?php
 
 /**
- * Fired during plugin deactivation
- *
- * @link       https://profiles.wordpress.org/brijesh2911/
- * @since      1.0.0
- *
- * @package    Safe_Media
- * @subpackage Safe_Media/includes
- */
-
-/**
  * Fired during plugin deactivation.
  *
  * This class defines all code necessary to run during the plugin's deactivation.
