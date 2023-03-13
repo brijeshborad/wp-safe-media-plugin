@@ -1,26 +1,8 @@
 <?php
 
 /**
- * The file that defines the core plugin class
  *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @link       https://profiles.wordpress.org/brijesh2911/
- * @since      1.0.0
- *
- * @package    Safe_Media
- * @subpackage Safe_Media/includes
- */
-
-/**
- * The core plugin class.
- *
- * This is used to define internationalization, admin-specific hooks, and
- * public-facing site hooks.
- *
- * Also maintains the unique identifier of this plugin as well as the current
- * version of the plugin.
+ * This is used for helper functions related to attachment or media
  *
  * @since      1.0.0
  * @package    Safe_Media
@@ -51,7 +33,7 @@ class Safe_Media_Attachment {
 	 *
 	 * @return int[]|string
 	 */
-	function get_linked_posts( $attachment_id, $string = true ) {
+	function get_attached_posts( $attachment_id, $string = false ) {
 
 		// Get posts where attachment is set as featured image
 		$featured_img_posts = get_posts(
@@ -100,7 +82,7 @@ class Safe_Media_Attachment {
 	 *
 	 * @return int[]|string
 	 */
-	function get_linked_terms( $attachment_id, $string = true ) {
+	function get_attached_terms( $attachment_id, $string = false ) {
 		$args = array(
 			'hide_empty' => false,
 			'taxonomy'   => $this->_taxonomy,
@@ -130,6 +112,13 @@ class Safe_Media_Attachment {
 		}
 
 		return $term_string;
+	}
+
+	public function get_attached_objects( $image_id, $string = false ) {
+		return array(
+			'posts' => $this->get_attached_posts($image_id, $string),
+			'terms' => $this->get_attached_terms($image_id, $string)
+		);
 	}
 
 

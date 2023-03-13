@@ -157,6 +157,7 @@ class Safe_Media_Admin {
 
 	function media_columns_filter( $columns ) {
 		$columns['colAttachedObjects'] = __( 'Attached Objects' );
+
 		return $columns;
 	}
 
@@ -165,28 +166,31 @@ class Safe_Media_Admin {
 		if( $column_name !== 'colAttachedObjects' ) {
 			return;
 		}
-		$post_string = $this->safe_media_attachment->get_linked_posts( $attachment_id );
+		$objects = $this->safe_media_attachment->get_attached_objects( $attachment_id, true );
 
-		$term_string = $this->safe_media_attachment->get_linked_terms( $attachment_id );
-
-		echo $post_string ? 'Articles <br/>'.$post_string.'<br/>' : '';
-		echo $term_string ? 'Terms <br/>'.$term_string : '';
+		echo $objects['posts'] ? 'Articles <br/>'.$objects['posts'].'<br/>' : '';
+		echo $objects['terms'] ? 'Terms <br/>'.$objects['terms'] : '';
 	}
 
 
 	function media_attachment_fields_filter( $form_fields, $attachment ) {
+		$objects = $this->safe_media_attachment->get_attached_objects( $attachment->ID, true );
 
-		$form_fields['linked_articles'] = array(
-			'label' => __( 'Linked Articles', SAFE_MEDIA_TEXT_DOMAIN ),
-			'input' => 'html',
-			'html'  => $this->safe_media_attachment->get_linked_posts( $attachment->ID )
-		);
+		if( !empty( $objects['posts'] ) ) {
+			$form_fields['linked_articles'] = array(
+				'label' => __( 'Linked Articles', SAFE_MEDIA_TEXT_DOMAIN ),
+				'input' => 'html',
+				'html'  => $objects['posts']
+			);
+		}
 
-		$form_fields['linked_terms'] = array(
-			'label' => __( 'Linked Terms', SAFE_MEDIA_TEXT_DOMAIN ),
-			'input' => 'html',
-			'html'  => $this->safe_media_attachment->get_linked_terms( $attachment->ID )
-		);
+		if( !empty( $objects['terms'] ) ) {
+			$form_fields['linked_terms'] = array(
+				'label' => __( 'Linked Terms', SAFE_MEDIA_TEXT_DOMAIN ),
+				'input' => 'html',
+				'html'  => $objects['terms']
+			);
+		}
 
 		return $form_fields;
 	}
@@ -200,17 +204,17 @@ class Safe_Media_Admin {
 	 */
 	function pre_delete_attachment_filter( $delete, $post, $force_delete ) {
 
-		$posts = $this->safe_media_attachment->get_linked_posts( $post->ID );
-		$terms = $this->safe_media_attachment->get_linked_terms( $post->ID );
-		if( $posts || $terms ) {
+		$objects = $this->safe_media_attachment->get_attached_objects( $post->ID, true );
+
+		if( !empty( $objects['posts'] ) || !empty( $objects['terms'] ) ) {
 			if( wp_doing_ajax() ) {
 				// In ajax call, unable to send custom message right now.
 				wp_die( 0 );
 			}
 			$message = __( 'Please remove the image from below objects before deleting it.', SAFE_MEDIA_TEXT_DOMAIN );
-			$message .= $posts ? '<br/>'.__( 'Articles: ', SAFE_MEDIA_TEXT_DOMAIN ).$posts.'<br/>' : '';
-			$message .= $terms ? __( 'Terms: ', SAFE_MEDIA_TEXT_DOMAIN ).$terms : '';
-			wp_die( $message );
+			$message .= $objects['posts'] ? '<br/>'.__( 'Articles: ', SAFE_MEDIA_TEXT_DOMAIN ).$objects['posts'].'<br/>' : '';
+			$message .= $objects['terms'] ? __( 'Terms: ', SAFE_MEDIA_TEXT_DOMAIN ).$objects['terms'] : '';
+			wp_die( $message, 'Action Needed', array( 'response' => 400, 'back_link' => true ) );
 		}
 
 		return $delete;
