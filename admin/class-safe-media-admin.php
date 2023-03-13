@@ -118,12 +118,12 @@ class Safe_Media_Admin {
 		add_filter( 'attachment_fields_to_edit', [ $this, 'media_attachment_fields_filter' ], 10, 2 );
 
 		// Register filter hook to prevent deletion of attached image with post or term
-		add_filter( 'pre_delete_attachment', [ $this, 'pre_delete_attachment_filter' ], 10, 3 );
+		add_filter( 'pre_delete_attachment', [ $this, 'pre_delete_attachment_filter' ], 10, 2 );
 	}
 
 
 	/**
-	 *
+	 * This function is used with cmb2_admin_init hook in Safe_Media core class
 	 */
 	public function register_image_box_for_term() {
 		/**
@@ -222,11 +222,10 @@ class Safe_Media_Admin {
 	 *
 	 * @param $delete
 	 * @param $post
-	 * @param $force_delete
 	 *
 	 * @return mixed
 	 */
-	function pre_delete_attachment_filter( $delete, $post, $force_delete ) {
+	function pre_delete_attachment_filter( $delete, $post ) {
 
 		$objects = $this->safe_media_attachment->get_attached_objects( $post->ID, true );
 
