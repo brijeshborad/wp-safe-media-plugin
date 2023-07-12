@@ -13,7 +13,7 @@
  * @package           Safe_Media
  *
  * @wordpress-plugin
- * Plugin Name:       Safe Media Delete Plugin
+ * Plugin Name:       WP Safe Media
  * Plugin URI:        https://safe-media.local
  * Description:       This plugin prevents attached images with posts and terms to be deleted from Media Library
  * Version:           1.0.0
@@ -21,7 +21,7 @@
  * Author URI:        https://profiles.wordpress.org/brijesh2911/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       safe-media
+ * Text Domain:       safe-media-delete
  * Domain Path:       /languages
  */
 
@@ -39,7 +39,7 @@ define( 'SAFE_MEDIA_VERSION', '1.0.0' );
 
 define( 'SAFE_MEDIA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SAFE_MEDIA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'SAFE_MEDIA_TEXT_DOMAIN', 'safe-media' );
+define( 'SAFE_MEDIA_TEXT_DOMAIN', 'wp-safe-media' );
 
 /**
  * The code that runs during plugin activation.
